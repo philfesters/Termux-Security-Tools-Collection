@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FEZZY WRLD — Termux Security Tools Collection</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
+
+  :root {
+    --hot: #ff00ff;
+    --purple: #9900cc;
+    --deep: #0a0010;
+    --card: #1a0030;
+    --border: #440055;
+    --text: #e8d0ff;
+    --dim: #9980aa;
+    --green: #00ff88;
+    --red: #ff3344;
+    --cyan: #00ffee;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--deep);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,0,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,0,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,0,16,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+  }
+
+  .nav-brand {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 15px;
+    color: var(--hot);
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px var(--hot);
+  }
+
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a {
+    color: var(--dim);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--hot); }
+
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 24px 60px;
+    z-index: 1;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(153,0,204,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .scan-line {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--green);
+    letter-spacing: 3px;
+    margin-bottom: 40px;
+    animation: blink 1.2s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .hero-wordmark {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: clamp(52px, 10vw, 96px);
+    background: linear-gradient(135deg, #ff00ff 0%, #cc00ff 50%, #ff00cc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 4px;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 0 40px rgba(255,0,255,0.4));
+    animation: glow-pulse 3s ease-in-out infinite;
+  }
+  @keyframes glow-pulse {
+    0%, 100% { filter: drop-shadow(0 0 20px rgba(255,0,255,0.4)); }
+    50% { filter: drop-shadow(0 0 60px rgba(255,0,255,0.7)); }
+  }
+
+  .hero-subtitle {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(11px, 2vw, 14px);
+    color: var(--cyan);
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .hero-desc {
+    font-size: 17px;
+    color: var(--dim);
+    max-width: 500px;
+    margin: 0 auto 44px;
+    font-weight: 300;
+    line-height: 1.8;
+  }
+
+  .stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 44px;
+  }
+
+  .stat-pill {
+    background: rgba(255,0,255,0.08);
+    border: 1px solid var(--hot);
+    border-radius: 4px;
+    padding: 12px 28px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(255,0,255,0.12);
+    transition: all 0.3s;
+  }
+  .stat-pill:hover { box-shadow: 0 0 40px rgba(255,0,255,0.3); transform: translateY(-2px); }
+  .stat-pill .num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 30px; font-weight: 900;
+    color: var(--hot); display: block;
+    text-shadow: 0 0 20px var(--hot);
+  }
+  .stat-pill .label { font-size: 11px; letter-spacing: 2px; color: var(--dim); text-transform: uppercase; }
+
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 40px; }
+  .badges img { height: 22px; }
+
+  .install-hero {
+    background: rgba(0,0,0,0.5);
+    border: 1px solid var(--green);
+    border-radius: 8px;
+    padding: 22px 28px;
+    max-width: 700px;
+    width: 100%;
+    text-align: left;
+    position: relative;
+    box-shadow: 0 0 30px rgba(0,255,136,0.1);
+  }
+  .install-hero::before {
+    content: '// QUICK INSTALL';
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; color: var(--green);
+    letter-spacing: 2px; display: block;
+    margin-bottom: 12px; opacity: 0.7;
+  }
+  .install-hero code {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px; color: #00ff88;
+    display: block; line-height: 1.9;
+  }
+
+  .copy-btn {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(255,0,255,0.15);
+    border: 1px solid var(--hot);
+    color: var(--hot);
+    padding: 4px 14px;
+    font-size: 11px;
+    font-family: 'Share Tech Mono', monospace;
+    cursor: pointer; border-radius: 3px;
+    transition: all 0.2s; letter-spacing: 1px;
+  }
+  .copy-btn:hover { background: var(--hot); color: #000; }
+
+  section {
+    position: relative; z-index: 1;
+    max-width: 1100px; margin: 0 auto;
+    padding: 64px 24px;
+  }
+
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; color: var(--hot);
+    letter-spacing: 4px; text-transform: uppercase;
+    margin-bottom: 6px; opacity: 0.8;
+  }
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(20px, 3vw, 30px);
+    font-weight: 700; color: #fff; margin-bottom: 36px;
+  }
+
+  .warning-box {
+    background: linear-gradient(135deg, rgba(255,51,68,0.08), rgba(255,51,68,0.04));
+    border: 2px solid var(--red);
+    border-radius: 8px; padding: 32px 36px;
+    box-shadow: 0 0 40px rgba(255,51,68,0.12);
+  }
+  .warning-box h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px; color: var(--red);
+    margin-bottom: 16px; text-shadow: 0 0 20px var(--red);
+  }
+  .warning-box ul { list-style: none; margin: 16px 0; }
+  .warning-box li { padding: 6px 0 6px 22px; position: relative; color: #ffbbbb; font-size: 15px; }
+  .warning-box li::before { content: '⚠'; position: absolute; left: 0; color: var(--red); }
+
+  .install-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+    gap: 20px; margin-bottom: 36px;
+  }
+  .i-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 24px;
+    position: relative; overflow: hidden; transition: all 0.3s;
+  }
+  .i-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--hot), var(--purple));
+  }
+  .i-card:hover { border-color: var(--hot); box-shadow: 0 0 30px rgba(255,0,255,0.12); transform: translateY(-2px); }
+  .i-card h3 { font-family: 'Orbitron', sans-serif; font-size: 13px; color: var(--hot); margin-bottom: 14px; }
+  .i-card ol { list-style: none; counter-reset: steps; }
+  .i-card li {
+    counter-increment: steps;
+    padding: 5px 0 5px 28px; position: relative; font-size: 13px; color: var(--dim);
+  }
+  .i-card li::before {
+    content: counter(steps); position: absolute; left: 0;
+    background: var(--hot); color: #000; width: 18px; height: 18px;
+    border-radius: 50%; font-size: 9px; font-weight: bold;
+    display: flex; align-items: center; justify-content: center; top: 6px;
+    font-family: 'Orbitron', sans-serif;
+  }
+  .i-card code {
+    font-family: 'Share Tech Mono', monospace; font-size: 11px;
+    color: var(--green); background: rgba(0,0,0,0.4); padding: 1px 5px; border-radius: 3px;
+  }
+
+  .script-box { background: #000; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 24px; }
+  .script-header {
+    background: rgba(255,0,255,0.07); border-bottom: 1px solid var(--border);
+    padding: 10px 16px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .script-title { font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--hot); }
+  .script-body { padding: 20px; overflow-x: auto; }
+  .script-body pre { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: #00ff88; line-height: 1.8; white-space: pre; }
+  .c { color: #555; }
+  .e { color: #ff88ff; }
+
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .tab-btn {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--dim); padding: 8px 16px;
+    font-family: 'Share Tech Mono', monospace; font-size: 12px; letter-spacing: 1px;
+    cursor: pointer; border-radius: 4px; transition: all 0.2s;
+  }
+  .tab-btn:hover, .tab-btn.active {
+    background: rgba(255,0,255,0.1); border-color: var(--hot);
+    color: var(--hot); box-shadow: 0 0 12px rgba(255,0,255,0.15);
+  }
+
+  .tool-panel { display: none; }
+  .tool-panel.active { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .tool-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .tool-table th {
+    font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 2px;
+    color: var(--hot); text-align: left; padding: 12px 16px;
+    border-bottom: 1px solid var(--border); background: rgba(255,0,255,0.05);
+  }
+  .tool-table td { padding: 10px 16px; border-bottom: 1px solid rgba(68,0,85,0.3); vertical-align: top; }
+  .tool-table tr:hover td { background: rgba(255,0,255,0.03); }
+  .tn { font-family: 'Share Tech Mono', monospace; color: var(--cyan); font-weight: bold; font-size: 13px; }
+  .tc { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--green); background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 3px; }
+
+  .wf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 20px; }
+  .wf-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 24px; transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .wf-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--hot), var(--purple));
+  }
+  .wf-card:hover { border-color: var(--hot); box-shadow: 0 0 30px rgba(255,0,255,0.12); transform: translateY(-2px); }
+  .wf-card h3 { font-family: 'Orbitron', sans-serif; font-size: 13px; color: var(--hot); margin-bottom: 14px; }
+  .wf-card ol { list-style: none; counter-reset: wf; }
+  .wf-card li {
+    counter-increment: wf; padding: 4px 0 4px 28px;
+    position: relative; font-size: 13px; color: var(--dim);
+  }
+  .wf-card li::before {
+    content: counter(wf); position: absolute; left: 0;
+    background: var(--hot); color: #000; width: 18px; height: 18px; border-radius: 50%;
+    font-size: 9px; font-weight: bold; display: flex; align-items: center; justify-content: center; top: 5px;
+    font-family: 'Orbitron', sans-serif;
+  }
+  .wf-card code { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--green); }
+
+  .push-steps { counter-reset: push; }
+  .push-step {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 20px 24px 20px 72px; margin-bottom: 14px;
+    position: relative; counter-increment: push; transition: border-color 0.2s;
+  }
+  .push-step:hover { border-color: var(--hot); }
+  .push-step::before {
+    content: counter(push); position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
+    font-family: 'Orbitron', sans-serif; font-size: 26px; font-weight: 900;
+    color: var(--hot); opacity: 0.5; text-shadow: 0 0 20px var(--hot);
+  }
+  .push-step h3 { font-family: 'Orbitron', sans-serif; font-size: 12px; color: #fff; margin-bottom: 8px; letter-spacing: 1px; }
+  .push-step p { font-size: 14px; color: var(--dim); }
+  .push-step code {
+    font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--green);
+    background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 4px;
+    display: block; margin-top: 10px; line-height: 1.8; word-break: break-all;
+  }
+
+  .trouble-item {
+    display: grid; grid-template-columns: 40% 60%;
+    border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 8px;
+  }
+  .tp { padding: 12px 16px; background: rgba(255,51,68,0.06); font-family: 'Share Tech Mono',monospace; font-size: 12px; color: #ff9999; border-right: 1px solid var(--border); }
+  .tf { padding: 12px 16px; background: rgba(0,255,136,0.04); font-family: 'Share Tech Mono',monospace; font-size: 12px; color: var(--green); }
+
+  hr { border: none; border-top: 1px solid var(--border); }
+
+  footer {
+    position: relative; z-index: 1; border-top: 1px solid var(--border);
+    text-align: center; padding: 48px 24px; color: var(--dim);
+  }
+  .footer-brand { font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 900; color: var(--hot); letter-spacing: 4px; text-shadow: 0 0 30px var(--hot); margin-bottom: 6px; }
+  .footer-tag { font-family: 'Orbitron', sans-serif; font-size: 12px; color: var(--cyan); letter-spacing: 5px; margin-bottom: 16px; }
+  .footer-links { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+  .footer-links a { color: var(--dim); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--hot); }
+
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .trouble-item { grid-template-columns: 1fr; }
+    .tp { border-right: none; border-bottom: 1px solid var(--border); }
+    .hero-wordmark { font-size: 42px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">FEZZY WRLD</span>
+  <ul class="nav-links">
+    <li><a href="#warning">Warning</a></li>
+    <li><a href="#install">Install</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#workflows">Workflows</a></li>
+    <li><a href="#scripts">Scripts</a></li>
+    <li><a href="#push">Push Guide</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="scan-line">▶ BOJACK K9 SCAN INITIATED — SNIFFING FOR VULNERABILITIES</div>
+  <div class="hero-wordmark">FEZZY WRLD</div>
+  <div class="hero-subtitle">Termux Security Tools Collection</div>
+  <p class="hero-desc">Strategy Over Impulse · Bojack Security<br>105+ open source security tools for Android</p>
+
+  <div class="stats-row">
+    <div class="stat-pill"><span class="num">105+</span><span class="label">Real Tools</span></div>
+    <div class="stat-pill"><span class="num">11</span><span class="label">Categories</span></div>
+    <div class="stat-pill"><span class="num">400+</span><span class="label">Commands</span></div>
+    <div class="stat-pill"><span class="num">100%</span><span class="label">Open Source</span></div>
+  </div>
+
+  <div class="badges">
+    <img src="https://img.shields.io/badge/Platform-Termux%20Android-ff00ff?style=flat-square&logo=android" alt="">
+    <img src="https://img.shields.io/badge/License-MIT-aa00aa?style=flat-square" alt="">
+    <img src="https://img.shields.io/badge/Rootless-Yes-00ff88?style=flat-square" alt="">
+    <img src="https://img.shields.io/github/stars/philfesters/Termux-Security-Tools-Collection?style=flat-square&color=ff00ff" alt="">
+  </div>
+
+  <div class="install-hero">
+    <button class="copy-btn" onclick="copyInstall()">COPY</button>
+    <code>git clone https://github.com/philfesters/Termux-Security-Tools-Collection.git
+cd Termux-Security-Tools-Collection
+chmod +x scripts/install-all.sh
+./scripts/install-all.sh</code>
+  </div>
+</div>
+
+<hr>
+
+<section id="warning">
+  <div class="section-label">// READ FIRST</div>
+  <div class="section-title">⚠️ Ethical Warning</div>
+  <div class="warning-box">
+    <h2>⚠️ EDUCATIONAL PURPOSES ONLY ⚠️</h2>
+    <p style="color:#ffaaaa;margin-bottom:16px;">By using this collection you <strong style="color:#fff;">agree</strong> to all of the following:</p>
+    <ul>
+      <li>Only test systems you <strong style="color:#fff;">OWN</strong> or have explicit <strong style="color:#fff;">written permission</strong> to test</li>
+      <li>Comply with all <strong style="color:#fff;">local, national, and international</strong> cybersecurity laws</li>
+      <li>NOT use these tools for unauthorized access, data theft, or privacy violation</li>
+      <li>NOT use these tools to harm, harass, or damage others or their property</li>
+      <li>Report any discovered vulnerabilities <strong style="color:#fff;">responsibly</strong> to system owners</li>
+    </ul>
+    <div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,51,68,0.3);">
+      <p style="font-family:'Share Tech Mono',monospace;color:var(--red);font-size:13px;line-height:1.8;">
+        The author (Fezzy WRLD / Bojack Security) is NOT responsible for any misuse, damage, or legal consequences.<br>
+        <strong style="color:#fff;">STRATEGY OVER IMPULSE → THINK · PLAN · AUTHORIZE · DOCUMENT · REPORT</strong>
+      </p>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<section id="install">
+  <div class="section-label">// SETUP</div>
+  <div class="section-title">Installation Guide</div>
+
+  <div class="install-cards">
+    <div class="i-card">
+      <h3>Prerequisites</h3>
+      <ol>
+        <li>Termux from <strong style="color:#fff;">F-Droid</strong> (not Play Store)</li>
+        <li>3GB+ free storage</li>
+        <li>Internet connection</li>
+        <li>Run <code>termux-setup-storage</code></li>
+      </ol>
+    </div>
+    <div class="i-card">
+      <h3>Step-by-Step</h3>
+      <ol>
+        <li><code>pkg update && pkg upgrade -y</code></li>
+        <li><code>pkg install git python</code></li>
+        <li>Clone this repository</li>
+        <li>Run <code>./scripts/install-all.sh</code></li>
+        <li>Verify: <code>nmap --version</code></li>
+      </ol>
+    </div>
+    <div class="i-card">
+      <h3>Proot Distro (Advanced)</h3>
+      <ol>
+        <li><code>pkg install proot-distro</code></li>
+        <li><code>proot-distro install debian</code></li>
+        <li><code>proot-distro login debian</code></li>
+        <li>Full apt access inside proot</li>
+        <li>Install Metasploit here</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="script-box">
+    <div class="script-header">
+      <span class="script-title">install-all.sh — Full One-Command Installer</span>
+      <button class="copy-btn" onclick="copyEl('install-script')">COPY</button>
+    </div>
+    <div class="script-body">
+      <pre id="install-script"><span class="c">#!/bin/bash
+# FEZZY WRLD — Complete Installer | Strategy Over Impulse</span>
+
+<span class="e">echo "🔥 FEZZY WRLD — Termux Security Tools Collection"
+echo "Bojack K9 Scan Initiated..."</span>
+
+pkg update && pkg upgrade -y
+
+pkg install -y git python python-pip wget curl nmap masscan \
+  netcat-openbsd hydra john ncrack crunch gobuster ffuf \
+  tcpdump tshark ngrep mitmproxy binwalk steghide openssl gnupg ffmpeg
+
+mkdir -p ~/tools && cd ~/tools
+
+<span class="c"># OSINT & Recon</span>
+git clone https://github.com/aboul3la/Sublist3r.git
+git clone https://github.com/laramies/theHarvester.git
+git clone https://github.com/sherlock-project/sherlock.git
+git clone https://github.com/s0md3v/Photon.git
+git clone https://github.com/smicallef/spiderfoot.git
+
+<span class="c"># Vulnerability & Web Tools</span>
+git clone https://github.com/sqlmapproject/sqlmap.git
+git clone https://github.com/sullo/nikto.git
+git clone https://github.com/maurosoria/dirsearch.git
+git clone https://github.com/s0md3v/XSStrike.git
+git clone https://github.com/commixproject/commix.git
+git clone https://github.com/s0md3v/Arjun.git
+git clone https://github.com/epinna/tplmap.git
+git clone https://github.com/Mebus/cupp.git
+git clone https://github.com/drwetter/testssl.sh.git
+
+<span class="c"># pip tools</span>
+pip install holehe maigret phoneinfoga wafw00f sslyze \
+  yt-dlp gallery-dl spotdl androguard frida-tools shodan \
+  --break-system-packages 2>/dev/null || \
+pip install holehe maigret phoneinfoga wafw00f sslyze \
+  yt-dlp gallery-dl spotdl androguard frida-tools shodan
+
+<span class="e">echo "✅ Done! Tools in ~/tools | Strategy Over Impulse"</span></pre>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<section id="tools">
+  <div class="section-label">// ARSENAL</div>
+  <div class="section-title">Tools Index — 105+ Security Tools</div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('recon',this)">01 OSINT/RECON</button>
+    <button class="tab-btn" onclick="showTab('vuln',this)">02 VULN SCAN</button>
+    <button class="tab-btn" onclick="showTab('exploit',this)">03 EXPLOIT</button>
+    <button class="tab-btn" onclick="showTab('web',this)">04 WEB</button>
+    <button class="tab-btn" onclick="showTab('pass',this)">05 PASSWORD</button>
+    <button class="tab-btn" onclick="showTab('net',this)">06 NETWORK</button>
+    <button class="tab-btn" onclick="showTab('traffic',this)">07 TRAFFIC</button>
+    <button class="tab-btn" onclick="showTab('wireless',this)">08 WIRELESS</button>
+    <button class="tab-btn" onclick="showTab('forensics',this)">09 FORENSICS</button>
+    <button class="tab-btn" onclick="showTab('mobile',this)">10 MOBILE</button>
+    <button class="tab-btn" onclick="showTab('util',this)">11 UTILITIES</button>
+  </div>
+
+  <div id="recon" class="tool-panel active">
+    <table class="tool-table">
+      <thead><tr><th>TOOL</th><th>DESCRIPTION</th><th>COMMAND</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tn">nmap</span></td><td>Network/port scanner</td><td><span class="tc">nmap -sV target</span></td></tr>
+        <tr><td><span class="tn">sublist3r</span></td><td>Subdomain enumeration</td><td><span class="tc">python sublist3r.py -d domain</span></td></tr>
+        <tr><td><span class="tn">amass</span></td><td>Subdomain discovery</td><td><span class="tc">amass enum -d domain</span></td></tr>
+        <tr><td><span class="tn">subfinder</span></td><td>Fast subdomain finder</td><td><span class="tc">subfinder -d domain</span></td></tr>
+        <tr><td><span class="tn">assetfinder</span></td><td>Asset/subdomain discovery</td><td><span class="tc">assetfinder --subs-only domain</span></td></tr>
+        <tr><td><span class="tn">masscan</span></td><td>Fast port scanner</td><td><span class="tc">masscan -p1-65535 target</span></td></tr>
+        <tr><td><span class="tn">theHarvester</span></td><td>Email/domain OSINT</td><td><span class="tc">theHarvester -d domain -b google</span></td></tr>
+        <tr><td><span class="tn">sherlock</span></td><td>Username search (300+ sites)</td><td><span class="tc">python sherlock username</span></td></tr>
+        <tr><td><span class="tn">holehe</span></td><td>Email OSINT</td><td><span class="tc">holehe email@example.com</span></td></tr>
+        <tr><td><span class="tn">maigret</span></td><td>Username OSINT</td><td><span class="tc">maigret username</span></td></tr>
+        <tr><td><span class="tn">phoneinfoga</span></td><td>Phone number OSINT</td><td><span class="tc">phoneinfoga scan -n +1234567890</span></td></tr>
+        <tr><td><span class="tn">spiderfoot</span></td><td>OSINT automation</td><td><span class="tc">python sf.py -l 127.0.0.1:5001</span></td></tr>
+        <tr><td><span class="tn">recon-ng</span></td><td>Web recon framework</td><td><span class="tc">./recon-ng</span></td></tr>
+        <tr><td><span class="tn">photon</span></td><td>Fast web crawler</td><td><span class="tc">python photon.py -u domain</span></td></tr>
+        <tr><td><span class="tn">twint</span></td><td>Twitter/X OSINT</td><td><span class="tc">python -m twint -u username</span></td></tr>
+        <tr><td><span class="tn">instaloader</span></td><td>Instagram OSINT</td><td><span class="tc">instaloader profile username</span></td></tr>
+        <tr><td><span class="tn">whatweb</span></td><td>Web tech detection</td><td><span class="tc">whatweb domain</span></td></tr>
+        <tr><td><span class="tn">gowitness</span></td><td>Website screenshots</td><td><span class="tc">gowitness single https://domain</span></td></tr>
+        <tr><td><span class="tn">gau</span></td><td>URL gathering</td><td><span class="tc">gau domain</span></td></tr>
+        <tr><td><span class="tn">waybackurls</span></td><td>Historical URLs</td><td><span class="tc">waybackurls domain</span></td></tr>
+        <tr><td><span class="tn">hakrawler</span></td><td>URL crawler</td><td><span class="tc">echo domain | hakrawler</span></td></tr>
+        <tr><td><span class="tn">gospider</span></td><td>Spider tool</td><td><span class="tc">gospider -s domain</span></td></tr>
+        <tr><td><span class="tn">aquatone</span></td><td>Domain visualization</td><td><span class="tc">cat domains.txt | aquatone</span></td></tr>
+        <tr><td><span class="tn">shodan-cli</span></td><td>Shodan search</td><td><span class="tc">shodan search "apache"</span></td></tr>
+        <tr><td><span class="tn">maltego</span></td><td>Graph OSINT</td><td><span class="tc">APK — maltego.com</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="vuln" class="tool-panel">
+    <table class="tool-table">
+      <thead><tr><th>TOOL</th><th>DESCRIPTION</th><th>COMMAND</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tn">sqlmap</span></td><td>SQL injection automation</td><td><span class="tc">sqlmap -u "domain/page?id=1" --dump</span></td></tr>
+        <tr><td><span class="tn">nikto</span></td><td>Web server scanner</td><td><span class="tc">perl nikto.pl -h domain</span></td></tr>
+        <tr><td><span class="tn">wpscan</span></td><td>WordPress scanner</td><td><span class="tc">wpscan --url domain</span></td></tr>
+        <tr><td><span class="tn">nuclei</span></td><td>Template-based scanning</td><td><span class="tc">nuclei -u domain</span></td></tr>
+        <tr><td><span class="tn">dirsearch</span></td><td>Directory brute force</td><td><span class="tc">python dirsearch.py -u domain</span></td></tr>
+        <tr><td><span class="tn">gobuster</span></td><td>Dir/file brute force</td><td><span class="tc">gobuster dir -u domain -w wordlist</span></td></tr>
+        <tr><td><span class="tn">ffuf</span></td><td>Web fuzzer</td><td><span class="tc">ffuf -u domain/FUZZ -w wordlist</span></td></tr>
+        <tr><td><span class="tn">commix</span></td><td>Command injection</td><td><span class="tc">python commix.py --url domain</span></td></tr>
+        <tr><td><span class="tn">wafw00f</span></td><td>WAF detection</td><td><span class="tc">wafw00f domain</span></td></tr>
+        <tr><td><span class="tn">testssl</span></td><td>SSL/TLS scanner</td><td><span class="tc">./testssl.sh domain</span></td></tr>
+        <tr><td><span class="tn">sslyze</span></td><td>SSL scanner</td><td><span class="tc">sslyze domain</span></td></tr>
+        <tr><td><span class="tn">arjun</span></td><td>Parameter discovery</td><td><span class="tc">arjun -u domain/page.php</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="exploit" class="tool-panel">
+    <table class="tool-table">
+      <thead><tr><th>TOOL</th><th>DESCRIPTION</th><th>COMMAND</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tn">metasploit</span></td><td>Exploitation framework</td><td><span class="tc">msfconsole (via proot-distro)</span></td></tr>
+        <tr><td><span class="tn">routersploit</span></td><td>Router exploits</td><td><span class="tc">python3 rsf.py</span></td></tr>
+        <tr><td><span class="tn">beef</span></td><td>Browser exploitation</td><td><span class="tc">./beef</span></td></tr>
+        <tr><td><span class="tn">crackmapexec</span></td><td>Credential testing</td><td><span class="tc">crackmapexec smb target</span></td></tr>
+        <tr><td><span class="tn">empire</span></td><td>Post-exploitation</td><td><span class="tc">./empire</span></td></tr>
+        <tr><td><span class="tn">set</span></td><td>Social Engineering Toolkit</td><td><span class="tc">python setoolkit</span></td></tr>
+        <tr><td><span class="tn">sliver</span></td><td>C2 framework</td><td><span class="tc">./sliver-server</span></td></tr>
+        <tr><td><span class="tn">veil</span></td><td>Payload generator</td><td><span class="tc">veil</span></td></tr>
+        <tr><td><span class="tn">ghost</span></td><td>Android ADB backdoor</td><td><span class="tc">pip install ghost</span></td></tr>
+        <tr><td><span class="tn">sn1per</span></td><td>Automated pentest</td><td><span class="tc">./sniper -t target</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="web" class="tool-panel">
+    <table class="tool-table">
+      <thead><tr><th>TOOL</th><th>DESCRIPTION</th><th>COMMAND</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tn">xsstrike</span></td><td>XSS detection suite</td><td><span class="tc">python xsstrike.py -u "domain?q=test"</span></td></tr>
+        <tr><td><span class="tn">sstimap</span></td><td>SSTI scanner</td><td><span class="tc">python sstimap.py -u "domain?name=test"</span></td></tr>
+        <tr><td><span class="tn">tplmap</span></td><td>Template injection</td><td><span class="tc">python tplmap.py -u "domain?name=test"</span></td></tr>
+        <tr><td><span class="tn">graphqlmap</span></td><td>GraphQL testing</td><td><span class="tc">python graphqlmap.py -u domain/graphql</span></td></tr>
+        <tr><td><span class="tn">kiterunner</span></td><td>API route testing</td><td><span class="tc">./kr scan domain -w routes-large</span></td></tr>
+        <tr><td><span class="tn">lfisuite</span></td><td>LFI scanner</td><td><span class="tc">python lfisuite.py</span></td></tr>
+        <tr><td><span class="tn">fimap</span></td><td>LFI/RFI scanner</td><td><span class="tc">python fimap.py -u "domain?file=test"</span></td></tr>
+        <tr><td><span class="tn">wfuzz</span></td><td>Web fuzzer</td><td><span class="tc">wfuzz -z file,wordlist domain/FUZZ</span></td></tr>
+        <tr><td><span class="tn">httpx</span></td><td>HTTP probing</td><td><span class="tc">httpx -l urls.txt</span></td></tr>
+        <tr><td><span class="tn">httprobe</span></td><td>Live host detection</td><td><span class="tc">cat domains.txt | httprobe</span></td></tr>
+        <tr><td><span class="tn">smuggler</span></td><td>HTTP smuggling</td><td><span class="tc">python smuggler.py -u domain</span></td></tr>
+        <tr><td><span class="tn">breacher</span></td><td>Admin panel finder</td><td><span class="tc">python breacher.py -u domain</span></td></tr>
+        <tr><td><span class="tn">ssrf-finder</span></td><td>SSRF detection</td><td><span class="tc">python ssrf-finder.py -u domain</span></td></tr>
+        <tr><td><span class="tn">linkfinder</span></td><td>JS endpoint finder</td><td><span class="tc">python linkfinder.py -i domain</span></td></tr>
+        <tr><td><span class="tn">dirbuster</span></td><td>Directory brute force</td><td><span class="tc">APK available</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="pass" class="tool-panel">
+    <table class="tool-table">
+      <thead><tr><th>TOOL</th><th>DESCRIPTION</th><th>COMMAND</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tn">hydra</span></td><td>Login brute force</td><td><span class="tc">hydra -l user -P pass.txt target ssh</span></td></tr>
+        <tr><td><span class="tn">john</span></td><td>Hash cracker</td><td><span class="tc">john --format=raw-md5 hash.txt</span></td></tr>
+        <tr><td><span class="tn">hashcat</span></td><td>GPU hash cracker</td><td><span class="tc">hashcat -m 0 hash.txt wordlist.txt</span></td></tr>
+        <tr><td><span class="tn">ncrack</span></td><td>Network auth cracker</td><td><span class="tc">ncrack -U users.txt -P pass.txt target:22</span></td></tr>
+        <tr><td><span class="tn">medusa</span></td><td>Parallel brute forcer</td><td><span class="tc">medusa -h target -U users.txt -P pass.txt -M ssh</span></td></tr>
+        <tr><td><span class="tn">crunch</span></td><td>Wordlist generator</td><td><span class="tc">crunch 4 6 abc123 -o wordlist.txt</span></td></tr>
+        <tr><td><span class="tn">cupp</span></td><td>Profile-based wordlist</td><td><span class="tc">python cupp.py -i</span></td></tr>
+        <tr><td><span class="tn">cewl</span></td><td>Website wordlist spider</td><td><span class="tc">cewl -d 2 -w wordlist.txt domain</span></td></tr>
+        <tr><td><span class="tn">kwprocessor</span></td><td>Keyboard walk generator</td><td><span class="tc">./kwp basechars.txt keymaps.txt routes.txt</span></td></tr>
+        <tr><td><span class="tn">princeprocessor</span></td><td>Wordlist mutations</td><td><span class="tc">./pp64.bin -o output.txt &lt; wordlist.txt</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="net" class="tool-panel">
+    <table class="tool-table">
+      <thead><tr><th>TOOL</th><th>DESCRIPTION</th><th>COMMAND</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tn">nmap</span></td><td>Network scanner</td><td><span class="tc">nmap -sV -O target</span></td></tr>
+        <tr><td><span class="tn">masscan</span></td><td>Fast port scanner</td><td><span class="tc">masscan -p80,443 target/24</span></td></tr>
+        <tr><td><span class="tn">zmap</span></td><td>Internet scanner</td><td><span class="tc">zmap -p 80 target/24</span></td></tr>
+        <tr><td><span class="tn">netcat</span></td><td>TCP/IP swiss army knife</td><td><span class="tc">nc -l -p 4444</span></td></tr>
+        <tr><td><span class="tn">bettercap</span></td><td>Network attack framework</td><td><span class="tc">bettercap</span></td></tr>
+        <tr><td><span class="tn">ettercap</span></td><td>MITM framework</td><td><span class="tc">ettercap -T -M arp:remote /target//</span></td></tr>
+        <tr><td><span class="tn">hping3</span></td><td>Packet crafting</td><td><span class="tc">hping3 -S -p 80 target</span></td></tr>
+        <tr><td><span class="tn">traceroute</span></td><td>Route tracing</td><td><span class="tc">traceroute target</span></td></tr>
+        <tr><td><span class="tn">whois</span></td><td>Domain info</td><td><span class="tc">whois target.com</span></td></tr>
+        <tr><td><span class="tn">dig</span></td><td>DNS enumeration</td><td><span class="tc">dig target.com ANY +short</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="traffic" class="tool-panel">
+    <table class="tool-table">
+      <thead><tr><th>TOOL</th><th>DESCRIPTION</th><th>COMMAND</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tn">tcpdump</span></td><td>Packet capture</td><td><span class="tc">tcpdump -i wlan0 -w capture.pcap</span></td></tr>
+        <tr><td><span class="tn">wireshark</span></td><td>GUI traffic analysis</td><td><span class="tc">wireshark (Termux:X11)</span></td></tr>
+        <tr><td><span class="tn">tshark</span></td><td>CLI Wireshark</td><td><span class="tc">tshark -i wlan0</span></td></tr>
+        <tr><td><span class="tn">ngrep</span></td><td>Network grep</td><td><span class="tc">ngrep -d any 'password'</span></td></tr>
+        <tr><td><span class="tn">mitmproxy</span></td><td>HTTP/HTTPS interceptor</td><td><span class="tc">mitmproxy -p 8080</span></td></tr>
+        <tr><td><span class="tn">ettercap</span></td><td>ARP spoofing/sniffing</td><td><span class="tc">ettercap -G</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="wireless" class="tool-panel">
+    <table class="tool-table">
+      <thead><tr><th>TOOL</th><th>DESCRIPTION</th><th>COMMAND</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tn">aircrack-ng</span></td><td>WiFi cracking suite</td><td><span class="tc">airmon-ng start wlan0</span></td></tr>
+        <tr><td><span class="tn">wifite</span></td><td>WiFi auditor</td><td><span class="tc">wifite</span></td></tr>
+        <tr><td><span class="tn">fluxion</span></td><td>WiFi phishing</td><td><span class="tc">./fluxion.sh</span></td></tr>
+        <tr><td><span class="tn">reaver</span></td><td>WPS attack</td><td><span class="tc">reaver -i wlan0mon -b BSSID</span></td></tr>
+        <tr><td><span class="tn">kismet</span></td><td>WiFi sniffer/IDS</td><td><span class="tc">kismet</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="forensics" class="tool-panel">
+    <table class="tool-table">
+      <thead><tr><th>TOOL</th><th>DESCRIPTION</th><th>COMMAND</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tn">binwalk</span></td><td>Firmware analysis</td><td><span class="tc">binwalk firmware.bin</span></td></tr>
+        <tr><td><span class="tn">foremost</span></td><td>File carving</td><td><span class="tc">foremost -i image.dd</span></td></tr>
+        <tr><td><span class="tn">testdisk</span></td><td>Data recovery</td><td><span class="tc">testdisk</span></td></tr>
+        <tr><td><span class="tn">exiftool</span></td><td>Metadata extraction</td><td><span class="tc">exiftool image.jpg</span></td></tr>
+        <tr><td><span class="tn">steghide</span></td><td>Steganography</td><td><span class="tc">steghide extract -sf file.jpg</span></td></tr>
+        <tr><td><span class="tn">gpg</span></td><td>Encryption/signing</td><td><span class="tc">gpg --gen-key</span></td></tr>
+        <tr><td><span class="tn">openssl</span></td><td>Crypto toolkit</td><td><span class="tc">openssl enc -aes-256-cbc -in file</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="mobile" class="tool-panel">
+    <table class="tool-table">
+      <thead><tr><th>TOOL</th><th>DESCRIPTION</th><th>COMMAND</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tn">androguard</span></td><td>APK analysis</td><td><span class="tc">androguard decompile app.apk</span></td></tr>
+        <tr><td><span class="tn">apktool</span></td><td>APK decompile</td><td><span class="tc">apktool d app.apk</span></td></tr>
+        <tr><td><span class="tn">dex2jar</span></td><td>DEX to JAR</td><td><span class="tc">d2j-dex2jar app.dex</span></td></tr>
+        <tr><td><span class="tn">frida</span></td><td>Dynamic instrumentation</td><td><span class="tc">frida -U -l script.js app</span></td></tr>
+        <tr><td><span class="tn">mobsf</span></td><td>Mobile security framework</td><td><span class="tc">python manage.py runserver</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="util" class="tool-panel">
+    <table class="tool-table">
+      <thead><tr><th>TOOL</th><th>DESCRIPTION</th><th>COMMAND</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tn">yt-dlp</span></td><td>YouTube/video downloader</td><td><span class="tc">yt-dlp URL</span></td></tr>
+        <tr><td><span class="tn">gallery-dl</span></td><td>Social media downloader</td><td><span class="tc">gallery-dl URL</span></td></tr>
+        <tr><td><span class="tn">ffmpeg</span></td><td>Media converter</td><td><span class="tc">ffmpeg -i input.mp4 output.avi</span></td></tr>
+        <tr><td><span class="tn">spotdl</span></td><td>Spotify downloader</td><td><span class="tc">spotdl "track_url"</span></td></tr>
+        <tr><td><span class="tn">httrack</span></td><td>Website copier</td><td><span class="tc">httrack URL</span></td></tr>
+        <tr><td><span class="tn">wget</span></td><td>File downloader</td><td><span class="tc">wget URL</span></td></tr>
+        <tr><td><span class="tn">curl</span></td><td>HTTP client</td><td><span class="tc">curl -s URL</span></td></tr>
+        <tr><td><span class="tn">python http.server</span></td><td>Local file sharing</td><td><span class="tc">python -m http.server 8000</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr>
+
+<section id="workflows">
+  <div class="section-label">// PLAYBOOKS</div>
+  <div class="section-title">Workflow Guides</div>
+
+  <div class="wf-grid">
+    <div class="wf-card">
+      <h3>🔎 Recon Workflow</h3>
+      <ol>
+        <li>whois + dig target domain</li>
+        <li>subfinder/sublist3r for subdomains</li>
+        <li>nmap -sV for port/service scan</li>
+        <li>whatweb for tech fingerprinting</li>
+        <li>theHarvester for email harvest</li>
+        <li>gowitness for screenshots</li>
+      </ol>
+    </div>
+    <div class="wf-card">
+      <h3>🛡️ Vuln Assessment</h3>
+      <ol>
+        <li>wafw00f to check for WAF</li>
+        <li>gobuster/dirsearch for dirs</li>
+        <li>nikto web server scan</li>
+        <li>nuclei with CVE templates</li>
+        <li>sqlmap on any ?id= params</li>
+        <li>wpscan if WordPress detected</li>
+      </ol>
+    </div>
+    <div class="wf-card">
+      <h3>🔑 Password Testing</h3>
+      <ol>
+        <li>cewl to spider target site</li>
+        <li>cupp for custom wordlist</li>
+        <li>hydra for online brute force</li>
+        <li>john for offline hash cracking</li>
+        <li>hashcat for GPU acceleration</li>
+        <li>ncrack for network services</li>
+      </ol>
+    </div>
+    <div class="wf-card">
+      <h3>🌐 SSH Tunneling</h3>
+      <ol>
+        <li>nmap -p 22 -sV target</li>
+        <li>hydra brute force if needed</li>
+        <li><code>ssh -D 1080 user@target</code></li>
+        <li>Configure proxychains</li>
+        <li>Route tools through tunnel</li>
+        <li>Document all findings</li>
+      </ol>
+    </div>
+  </div>
+
+  <div style="margin-top:40px;">
+    <h3 style="font-family:'Orbitron',sans-serif;font-size:15px;color:var(--hot);margin-bottom:20px;">⚡ Quick Reference</h3>
+    <table class="tool-table">
+      <thead><tr><th>TASK</th><th>COMMAND</th></tr></thead>
+      <tbody>
+        <tr><td>Scan network</td><td><span class="tc">nmap 192.168.1.0/24</span></td></tr>
+        <tr><td>Find subdomains</td><td><span class="tc">subfinder -d example.com</span></td></tr>
+        <tr><td>SQL injection</td><td><span class="tc">sqlmap -u target.com?id=1</span></td></tr>
+        <tr><td>Dir brute force</td><td><span class="tc">gobuster dir -u target -w wordlist</span></td></tr>
+        <tr><td>Brute force SSH</td><td><span class="tc">hydra -L users.txt -P pass.txt ssh://target</span></td></tr>
+        <tr><td>Crack hash</td><td><span class="tc">hashcat -m 0 hash.txt wordlist.txt</span></td></tr>
+        <tr><td>Find username</td><td><span class="tc">python sherlock username</span></td></tr>
+        <tr><td>Capture packets</td><td><span class="tc">tcpdump -i wlan0 -w cap.pcap</span></td></tr>
+        <tr><td>XSS scan</td><td><span class="tc">python xsstrike.py -u "target?q=test"</span></td></tr>
+        <tr><td>Email OSINT</td><td><span class="tc">holehe email@example.com</span></td></tr>
+        <tr><td>Phone OSINT</td><td><span class="tc">phoneinfoga scan -n +1234567890</span></td></tr>
+        <tr><td>Generate wordlist</td><td><span class="tc">cupp -i</span></td></tr>
+        <tr><td>APK decompile</td><td><span class="tc">apktool d app.apk</span></td></tr>
+        <tr><td>Extract metadata</td><td><span class="tc">exiftool image.jpg</span></td></tr>
+        <tr><td>HTTP file server</td><td><span class="tc">python -m http.server 8000</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr>
+
+<section id="scripts">
+  <div class="section-label">// AUTOMATION</div>
+  <div class="section-title">Scripts</div>
+
+  <div class="script-box">
+    <div class="script-header">
+      <span class="script-title">update-all.sh — Update Everything</span>
+      <button class="copy-btn" onclick="copyEl('update-script')">COPY</button>
+    </div>
+    <div class="script-body">
+      <pre id="update-script"><span class="c">#!/bin/bash
+# FEZZY WRLD — Update all tools</span>
+<span class="e">echo "🔥 Updating all tools..."</span>
+cd ~/tools
+for dir in */; do
+  [ -d "$dir/.git" ] && echo "↻ $dir" && cd "$dir" && git pull --quiet && cd ..
+done
+pip install --upgrade yt-dlp gallery-dl holehe maigret wafw00f \
+  --break-system-packages 2>/dev/null || \
+pip install --upgrade yt-dlp gallery-dl holehe maigret wafw00f
+<span class="e">echo "✅ All tools updated. Strategy Over Impulse."</span></pre>
+    </div>
+  </div>
+
+  <div class="script-box">
+    <div class="script-header">
+      <span class="script-title">install-category.sh — Install by Category</span>
+      <button class="copy-btn" onclick="copyEl('cat-script')">COPY</button>
+    </div>
+    <div class="script-body">
+      <pre id="cat-script"><span class="c">#!/bin/bash
+# Usage: ./install-category.sh [osint|web|passwords|network|forensics|utilities]</span>
+CATEGORY=$1
+mkdir -p ~/tools && cd ~/tools
+case "$CATEGORY" in
+  osint)
+    git clone https://github.com/sherlock-project/sherlock.git
+    git clone https://github.com/aboul3la/Sublist3r.git
+    git clone https://github.com/laramies/theHarvester.git
+    pip install holehe maigret phoneinfoga shodan --break-system-packages ;;
+  web)
+    git clone https://github.com/sqlmapproject/sqlmap.git
+    git clone https://github.com/s0md3v/XSStrike.git
+    git clone https://github.com/maurosoria/dirsearch.git
+    pkg install gobuster ffuf ;;
+  passwords)
+    pkg install hydra john ncrack crunch
+    git clone https://github.com/Mebus/cupp.git ;;
+  network)
+    pkg install nmap masscan netcat-openbsd bettercap mitmproxy ;;
+  forensics)
+    pkg install binwalk steghide openssl gnupg
+    pip install androguard frida-tools --break-system-packages ;;
+  utilities)
+    pkg install ffmpeg wget curl
+    pip install yt-dlp gallery-dl spotdl --break-system-packages ;;
+  *)
+    echo "Usage: $0 [osint|web|passwords|network|forensics|utilities]" ;;
+esac
+<span class="e">echo "✅ $CATEGORY tools installed! Strategy Over Impulse."</span></pre>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<section id="trouble">
+  <div class="section-label">// FIXES</div>
+  <div class="section-title">Troubleshooting</div>
+
+  <div class="trouble-item"><div class="tp">Permission denied</div><div class="tf">chmod +x script.sh</div></div>
+  <div class="trouble-item"><div class="tp">Package not found</div><div class="tf">pkg update && pkg upgrade</div></div>
+  <div class="trouble-item"><div class="tp">Storage not accessible</div><div class="tf">termux-setup-storage</div></div>
+  <div class="trouble-item"><div class="tp">Python module missing</div><div class="tf">pip install module --break-system-packages</div></div>
+  <div class="trouble-item"><div class="tp">pip externally-managed error</div><div class="tf">Add --break-system-packages flag</div></div>
+  <div class="trouble-item"><div class="tp">git clone fails</div><div class="tf">git config --global http.sslverify false</div></div>
+  <div class="trouble-item"><div class="tp">Metasploit not found</div><div class="tf">proot-distro install debian → apt install metasploit-framework</div></div>
+  <div class="trouble-item"><div class="tp">Out of storage</div><div class="tf">Install only the categories you need</div></div>
+  <div class="trouble-item"><div class="tp">Command not found after install</div><div class="tf">source ~/.bashrc or restart Termux</div></div>
+  <div class="trouble-item"><div class="tp">Python2 vs Python3 conflict</div><div class="tf">Use python3 explicitly or alias python=python3</div></div>
+  <div class="trouble-item"><div class="tp">Hashcat GPU not working</div><div class="tf">Use CPU mode: hashcat --force</div></div>
+  <div class="trouble-item"><div class="tp">Wireless tools need root?</div><div class="tf">Most work rootless — monitor mode needs supported hardware</div></div>
+</section>
+
+<hr>
+
+<section id="push">
+  <div class="section-label">// DEPLOYMENT</div>
+  <div class="section-title">How to Push to GitHub</div>
+
+  <div class="push-steps">
+    <div class="push-step">
+      <h3>CREATE REPO ON GITHUB</h3>
+      <p>github.com → New repository → Name: <strong style="color:#fff;">Termux-Security-Tools-Collection</strong> → Public → No README → Create</p>
+    </div>
+    <div class="push-step">
+      <h3>CONFIGURE GIT IN TERMUX</h3>
+      <code>pkg install git
+git config --global user.email "your@email.com"
+git config --global user.name "philfesters"</code>
+    </div>
+    <div class="push-step">
+      <h3>INIT REPO & COPY FILES</h3>
+      <code>mkdir Termux-Security-Tools-Collection
+cd Termux-Security-Tools-Collection
+git init</code>
+      <p style="margin-top:8px;">Copy all files (README.md, index.html, scripts/, categories/, etc.) into this folder</p>
+    </div>
+    <div class="push-step">
+      <h3>STAGE & COMMIT</h3>
+      <code>git add .
+git commit -m "FEZZY WRLD: 100+ Termux security tools — Strategy Over Impulse"</code>
+    </div>
+    <div class="push-step">
+      <h3>PUSH TO GITHUB</h3>
+      <code>git branch -M main
+git remote add origin https://github.com/philfesters/Termux-Security-Tools-Collection.git
+git push -u origin main</code>
+      <p style="margin-top:8px;">When prompted for password → use your <strong style="color:#fff;">Personal Access Token</strong> from github.com/settings/tokens</p>
+    </div>
+    <div class="push-step">
+      <h3>ENABLE GITHUB PAGES</h3>
+      <p>Repo → Settings → Pages → Source: main → / (root) → Save<br>Live at: <strong style="color:var(--cyan);">philfesters.github.io/Termux-Security-Tools-Collection</strong></p>
+    </div>
+  </div>
+
+  <div style="margin-top:28px;background:rgba(0,255,136,0.04);border:1px solid var(--green);border-radius:8px;padding:20px 24px;">
+    <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);letter-spacing:2px;margin-bottom:12px;">// FULL PUSH ONE-LINER</div>
+    <code style="font-family:'Share Tech Mono',monospace;font-size:12px;color:#00ff88;display:block;line-height:1.8;word-break:break-all;">cd Termux-Security-Tools-Collection && git init && git add . && git commit -m "FEZZY WRLD: Termux Security Tools" && git branch -M main && git remote add origin https://github.com/philfesters/Termux-Security-Tools-Collection.git && git push -u origin main</code>
+  </div>
+</section>
+
+<hr>
+
+<footer>
+  <div class="footer-brand">FEZZY WRLD</div>
+  <div class="footer-tag">STRATEGY OVER IMPULSE</div>
+  <p style="font-size:14px;color:var(--dim);">Bojack K9 Security — Loyalty. Protection. Code.</p>
+  <p style="font-size:13px;margin-top:8px;">Made with 🔥 by <a href="https://github.com/philfesters" style="color:var(--hot);text-decoration:none;">github.com/philfesters</a></p>
+  <div class="footer-links">
+    <a href="#warning">Warning</a>
+    <a href="#install">Install</a>
+    <a href="#tools">Tools</a>
+    <a href="#workflows">Workflows</a>
+    <a href="#push">Push Guide</a>
+    <a href="https://github.com/philfesters/Termux-Security-Tools-Collection/blob/main/LICENSE">MIT License</a>
+  </div>
+  <p style="font-size:11px;color:#333;margin-top:20px;">© 2026 Fezzy WRLD / Bojack Security. All tools are open source. Use ethically.</p>
+</footer>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function copyInstall() {
+  const t = `git clone https://github.com/philfesters/Termux-Security-Tools-Collection.git\ncd Termux-Security-Tools-Collection\nchmod +x scripts/install-all.sh\n./scripts/install-all.sh`;
+  navigator.clipboard.writeText(t).then(() => flash(event.target));
+}
+function copyEl(id) {
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => flash(event.target));
+}
+function flash(btn) {
+  const orig = btn.textContent;
+  btn.textContent = 'COPIED!';
+  btn.style.background = 'var(--green)';
+  btn.style.color = '#000';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; btn.style.color = ''; }, 2000);
+}
+</script>
+</body>
+</html>
