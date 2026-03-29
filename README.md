@@ -1,144 +1,181 @@
-# FEZZY STATION 🛸
+# 🔥 FEZZY WRLD — Termux Security Tools Collection
+## Strategy Over Impulse | Bojack Security
 
-**Grant Fezzy Festers · Ravensmead · Cape Town · Strategy Over Impulse**
+[![GitHub stars](https://img.shields.io/github/stars/philfesters/Termux-Security-Tools-Collection)](https://github.com/philfesters/Termux-Security-Tools-Collection/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/philfesters/Termux-Security-Tools-Collection)](https://github.com/philfesters/Termux-Security-Tools-Collection/network)
+[![GitHub license](https://img.shields.io/github/license/philfesters/Termux-Security-Tools-Collection)](https://github.com/philfesters/Termux-Security-Tools-Collection/blob/main/LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Termux%20Android-ff00ff)](https://termux.dev)
+[![Rootless](https://img.shields.io/badge/Rootless-Yes-00ff88)](https://termux.dev)
+[![Made In](https://img.shields.io/badge/Made%20In-Ravensmead%2C%20Cape%20Town-0099ff)](https://github.com/philfesters)
+[![Self Taught](https://img.shields.io/badge/Self--Taught-Developer-ff6600)](https://github.com/philfesters)
 
-> *They posted it thinking it was safe. We pulled the whole page before the wifi even blinked.*
+> **Bojack K9 Scan Initiated — Sniffing for vulnerabilities. Loyalty. Protection. Code.**
 
-A private media intelligence command centre living inside **Termux on Android**. No desktop. No root. No subscriptions. No ads. No tracking. **No one knowing you were ever there.**
-
-Built by a self-taught developer on a rootless Android phone — one portal at a time — alongside Claude AI.
-
----
-
-## What It Is
-
-Fezzy Station is a Bash script (`fezzy_station_v34.sh`) that launches a full-featured media operations dashboard directly in Termux. Paste a URL from 1000+ platforms — music lands as MP3 with artwork sealed in. Video pulls HQ. Galleries ripped clean. Books free. Social profiles drained. All metadata stripped.
-
-No GUI. No dependencies beyond what runs on stock Termux. **Just a terminal and the will to build.**
+A curated collection of **105+ open source security tools** for Termux on Android. Built for penetration testers, security researchers, and ethical hackers who work mobile — no laptop required.
 
 ---
 
-## Portals
+## 👤 About the Builder
 
-| # | Portal | What It Does |
-|---|--------|-------------|
-| 1 | **Gallery Portal** | gallery-dl · image ripper · cookie auth · bulk · username drain |
-| 2 | **Music Portal** | yt-dlp · MP3 · artwork embed · SoundCloud · Bandcamp · playlists |
-| 3 | **Video Portal** | HQ merge · TikTok · Instagram · Twitter · 1000+ sites |
-| 4 | **Web Grab** | wget · offline mirror · nano · minimal · full site |
-| 5 | **Music Search** | No URL needed · type artist · top 10 · SoundCloud · Audiomack · Bandcamp |
-| 6 | **Tool Portal** | ncdu · ranger · htop · battery · storage · ffmpeg convert |
-| 7 | **Juice WRLD** | 999 forever · unreleased vault · all platforms · archive protected |
-| 8 | **Social Portal** | Profile drain · OSINT · Sherlock · reverse image · username search · bulk |
-| 9 | **Adult Portal** | 18+ · gallery-dl · erome · pornpics · rule34 · gelbooru · performers · categories |
-| 10 | **Books Portal** | Auto-download by title · Gutenberg · Anna's Archive · 70,000+ free books |
-| 11 | **Hacker Portal** | nmap · sherlock · whois · sqlmap · wfuzz · theHarvester · holehe · anubis |
+My name is **Grant Festers**, better known as **Fezzy WRLD** — a self-taught developer from **Ravensmead, Cape Town, South Africa**.
 
----
+I build entirely from a **rootless Android phone** (Honor X5b, Android 14) using **Termux**. No laptop. No formal training. No shortcuts.
 
-## Tech Stack
+Everything in this repo was written, tested, and deployed from a phone screen. That's not a limitation — that's the point.
 
-```
-Termux (Android 14)     —  rootless terminal environment
-yt-dlp                  —  video and audio downloader · 1000+ sites
-gallery-dl              —  image and gallery ripper
-ffmpeg                  —  audio/video conversion and merging
-Python 3 + pip          —  tool runtime
-wget · curl             —  HTTP fetching and site mirroring
-nmap                    —  network scanner
-sherlock                —  username OSINT across 300+ platforms
-sqlmap                  —  SQL injection testing
-wfuzz                   —  web fuzzer
-theHarvester            —  email and subdomain recon
-holehe                  —  email registration checker
-anubis                  —  subdomain enumeration
-ranger · ncdu · htop    —  system and file management
-gum                     —  terminal UI (spin + style only)
-Claude AI               —  build partner
-```
+My guiding philosophy is **Strategy Over Impulse (SOI)** — think before you act, plan before you build, understand before you execute. This mindset runs through everything I create.
+
+I run a **three-AI workflow** for development:
+- 🤖 **Claude** — coding and architecture
+- 🎨 **ChatGPT** — design and visuals
+- 💡 **Gemini** — ideas and research
+
+My projects are inspired by artists who turn struggle into craft — **Juice WRLD**, **Lil Uzi Vert** — the idea that you can build something real out of nothing, from wherever you are.
+
+And my brand mascot? **Bojack** — my Lab/Husky mix, and the reason this whole security suite carries his name. Loyalty. Protection. Code.
 
 ---
 
-## Deploy
+## 🌍 The Setup
+
+| Detail | Info |
+|--------|------|
+| Location | Ravensmead, Cape Town, South Africa |
+| Device | Honor X5b — Android 14 |
+| Environment | Termux (rootless) |
+| Background | 100% self-taught |
+| GitHub | [@philfesters](https://github.com/philfesters) |
+| Web Projects | FEZZY WRLD SOI App · Bojack Security · Grant & The Machines · Still Here · Ravensmead Speaks |
+
+---
+
+## ⚠️ Ethical Warning
+
+**This collection is for EDUCATIONAL PURPOSES ONLY.**
+
+By using these tools, you agree to:
+- Only test systems you **OWN** or have **WRITTEN PERMISSION** to test
+- Comply with all applicable laws in your jurisdiction
+- **NOT** use these tools for illegal activities
+- **NOT** use these tools to harm others or violate privacy
+
+**The author (Fezzy WRLD / Bojack Security) is NOT responsible for any misuse.**
+
+> **Strategy Over Impulse means: THINK before you ACT.**
+
+---
+
+## 📊 Tool Statistics
+
+| Category | Tools |
+|----------|-------|
+| OSINT & Reconnaissance | 25 |
+| Vulnerability Scanners | 12 |
+| Exploitation Frameworks | 10 |
+| Web Application Testing | 15 |
+| Password Cracking | 10 |
+| Network Testing | 10 |
+| Traffic Analysis | 6 |
+| Wireless | 5 |
+| Forensics & Crypto | 7 |
+| Mobile Testing | 5 |
+| Utilities | 8 |
+| **TOTAL** | **~105** |
+
+---
+
+## 🚀 Quick Install
 
 ```bash
-# Copy script to home
-cp /sdcard/Download/fezzy_station_v34.sh ~/fezzy_station_v34.sh
+git clone https://github.com/philfesters/Termux-Security-Tools-Collection.git
+cd Termux-Security-Tools-Collection
+chmod +x scripts/install-all.sh
+./scripts/install-all.sh
+```
 
-# Syntax check before firing
-bash -n ~/fezzy_station_v34.sh
+Or one command:
 
-# Add to ~/.bashrc (nano only for .bashrc)
-nano ~/.bashrc
-# Add: source ~/fezzy_station_v34.sh
-
-# Launch
-source ~/.bashrc
-dl
+```bash
+git clone https://github.com/philfesters/Termux-Security-Tools-Collection.git && cd Termux-Security-Tools-Collection && chmod +x scripts/install-all.sh && ./scripts/install-all.sh
 ```
 
 ---
 
-## Shortcuts
-
-| Alias | Action |
-|-------|--------|
-| `dl` | Open main dashboard |
-| `sc` | Shortcuts guide |
-| `1` – `11` | Jump straight to portal |
-| `gallery` · `music` · `video` | Direct portal launch |
-| `books` · `hacker` · `adult` | Direct portal launch |
-| `jw` | Juice WRLD portal direct |
-
----
-
-## Rules (Critical)
-
-- Use **vim** for `.sh` files — never nano for scripts
-- `gum choose` and `gum input` are **broken on Android** — never use them
-- **Never touch:** FEZZY ASCII art · welcome screen · rotating quotes · Control Hub
-- Always `bash -n` syntax check before deploy
-- Bump version every session
-
----
-
-## Files
+## 📁 Repository Structure
 
 ```
-fezzy_station_v34.sh      —  main Termux bash script
-fezzy_website.html        —  GitHub Pages site (this repo)
-fezzy_station_app.html    —  mobile PWA launcher
+Termux-Security-Tools-Collection/
+├── README.md                    ← You are here
+├── INSTALL.md                   ← Full installation guide
+├── USAGE.md                     ← Usage guide & examples
+├── TOOLS_INDEX.md               ← Complete tools list
+├── ethical-warning.md           ← Detailed legal disclaimer
+├── LICENSE                      ← MIT License
+├── index.html                   ← GitHub Pages site
+├── scripts/
+│   ├── install-all.sh           ← One-command full install
+│   ├── install-category.sh      ← Category-specific install
+│   └── update-all.sh            ← Update all tools
+└── categories/
+    ├── 01-osint-recon.md
+    ├── 02-vulnerability-scanners.md
+    ├── 03-exploitation.md
+    ├── 04-web-testing.md
+    ├── 05-password-cracking.md
+    ├── 06-network-testing.md
+    ├── 07-traffic-analysis.md
+    ├── 08-wireless.md
+    ├── 09-forensics.md
+    ├── 10-mobile-testing.md
+    └── 11-utilities.md
 ```
 
 ---
 
-## The Mascot
+## 🔗 Documentation
 
-**Bojack** — Lab × Husky mix · Security Daemon · Always Watching · Never Tells 🐾
-
----
-
-## The Operator
-
-```
-NAME      Grant Fezzy Festers
-CALLSIGN  FEZZY 👽
-LOCATION  Ravensmead · Cape Town · South Africa
-PLATFORM  Honor X5b · Android 14 · Termux
-CONTACT   073 930 1858
-BUILT WITH Claude AI 🤖
-PHILOSOPHY Strategy Over Impulse (SOI)
-```
+| Document | Description |
+|----------|-------------|
+| [INSTALL.md](INSTALL.md) | Full installation guide |
+| [USAGE.md](USAGE.md) | Usage guide with workflow examples |
+| [TOOLS_INDEX.md](TOOLS_INDEX.md) | Complete index of all 105+ tools |
+| [ethical-warning.md](ethical-warning.md) | Ethical use policy & disclaimer |
+| [GitHub Pages Site](https://philfesters.github.io/Termux-Security-Tools-Collection) | Interactive HTML docs |
 
 ---
 
-## Philosophy
+## 🎯 Features
 
-> **Strategy Over Impulse.**
-> Build first. Think clean. Never rush the deploy.
-> 999 ♾
+- ✅ 105+ real, verified open source tools
+- ✅ Works on Android (rootless Termux) — no root, no laptop
+- ✅ One-command installation
+- ✅ Category-specific install options
+- ✅ 400+ usage commands documented
+- ✅ 4 workflow playbooks included
+- ✅ Full troubleshooting guide
+- ✅ Interactive HTML docs (GitHub Pages)
+- ✅ Built and maintained entirely from a phone
 
 ---
 
-*No root required. No desktop needed. Built from a phone in Ravensmead.*
-*Constructed alongside Claude AI · one portal at a time.*
+## 🐾 Bojack Security
+
+This project is named after **Bojack** — my Lab/Husky mix, my mascot, and my emotional anchor through every late-night build session.
+
+The name isn't just branding. It represents loyalty to the craft, protection through knowledge, and showing up every day even when the setup isn't perfect.
+
+**Bojack Security** is the security suite. **Fezzy WRLD** is the philosophy. **Strategy Over Impulse** is the code we live by.
+
+---
+
+## 📄 License
+
+MIT License — Free to use, modify, and distribute with attribution.
+
+---
+
+Made with 🔥 by **Grant "Fezzy WRLD" Festers** | Ravensmead, Cape Town
+[GitHub: @philfesters](https://github.com/philfesters) · [Bojack Security](https://github.com/philfesters/Termux-Security-Tools-Collection)
+
+*Bojack K9 Security — Loyalty. Protection. Code.*
+*Strategy Over Impulse — always.*
